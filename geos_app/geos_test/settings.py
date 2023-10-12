@@ -1,19 +1,15 @@
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '0!+zu1k*-nc&738saw%41$is%zoifr*(v3g-dl4ukxxzjlw4g8'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = True
+DJANGO_SUPERUSER_PASSWORD = '123qwe'
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -69,10 +65,10 @@ DATABASES = {
 
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'django_db',
-        'USER': 'django_user',
-        'PASSWORD': 'djangodbpassword123#',
-        'HOST': '127.0.0.1',
+        'NAME': 'geo_db',
+        'USER': 'django',
+        'PASSWORD': '123qwe',
+        'HOST': 'geos_db',
         'PORT': '5432',
     }
 

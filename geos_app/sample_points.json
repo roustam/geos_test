@@ -1,0 +1,70 @@
+{
+    "points":[
+        {
+            "city":"Paris",
+            "lat":48.8666666666667,
+            "lon":2.333333,
+            "score":10
+        },
+        {
+            "city": "Tbilisi",
+            "lat":41.6833333333333,
+            "lon":44.833333,
+            "score":10
+        },
+        {
+            "city": "Bern",
+            "lat":51.5,
+            "lon":-0.083333,
+            "score":10
+        },
+        {
+            "city": "London",
+            "lat":46.9166666666667,	
+            "lon":7.466667,
+            "score":10
+        },
+        {
+            "city": "Bratislava",
+            "lat":48.15,	
+            "lon":17.116667,
+            "score":10
+        },
+        {
+            "city": "Ljubljana",
+            "lat":46.05,
+            "lon":14.516667,
+            "score":10
+        },
+        {
+            "city": "Belgrade",
+            "lat":44.8333333333333,
+            "lon":20.5,
+            "score":10
+        },
+        {
+            "city": "Moscow",
+            "lat":55.75,
+            "lon":37.6,
+            "score":10
+        },
+        {
+            "city": "Warsaw",
+            "lat":52.25,
+            "lon":21,
+            "score":10
+        },
+        {
+            "city": "Amsterdam",
+            "lat":52.35,
+            "lon":4.916667,
+            "score":10
+        },
+        {
+            "city": "Lisbon",
+            "lat":38.7166666666667,
+            "lon":-9.133333,
+            "score":10
+        }
+    ]
+}

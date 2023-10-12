@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 
 class PointsModel(models.Model):
+    id=models.AutoField(primary_key=True)
     obj_id = models.IntegerField(default=0)
     geom = models.PointField()
     score = models.IntegerField()

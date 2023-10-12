@@ -1,0 +1,6 @@
+djangorestframework
+networkx
+haversine
+djangorestframework-gis
+psycopg2-binary
+postgis==1.0.4

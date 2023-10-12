@@ -5,22 +5,12 @@ import json
 from django.contrib.gis.geos import GEOSGeometry
 
 
-
 def index_view(request):
-    data_source_url = "https://datum-test-task.firebaseio.com/api/lines-points.json"
+    all_points = PointsModel.objects.count()
+    all_lines = LinesModel.objects.count()
+    print(all_points, all_lines)
     if request.method == 'GET':
-        with urllib.request.urlopen(data_source_url) as url:
-            response = url.read()
-            charset = url.info().get_content_charset('utf-8')
-            data = json.loads(response.decode(charset))
-            json_lines = data['lines']
-            json_points = data['points']
-            if PointsModel.objects.count() == 0:
-                add_points(json_points)
-                add_lines(json_lines)
-                return HttpResponse(f'New data has been added to DB.<br><br> Response :<br> lines {json_lines} <br><br> points {json_points}')
-            else:
-                return HttpResponse(f'Database already has the data.<br><br> Response :<br> lines {json_lines} <br><br> points {json_points}')
+        return HttpResponse(f'New data has been added to DB.<br><br> Response :<br>{all_lines} lines  <br><br>{all_points} points')
     else:
         return HttpResponse('rest test')
 

@@ -1,0 +1,32 @@
+version: '3'
+
+networks:
+  geos_network:
+    driver: bridge
+
+services:
+  geos_app:
+    container_name: geos_app
+    build: ./geos_app
+    volumes:
+      - ./geos_app:/opt/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      geos_db:
+       condition: service_healthy
+    networks:
+      - geos_network
+  
+  geos_db:
+    container_name: geos_db
+    build: ./postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - geos_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U django -d geo_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
