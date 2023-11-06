@@ -1,8 +1,9 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from .models import PointsModel, LinesModel
 import urllib.request
 import json
 from django.contrib.gis.geos import GEOSGeometry
+from django.template.response import TemplateResponse
 
 
 def index_view(request):
@@ -10,9 +11,9 @@ def index_view(request):
     all_lines = LinesModel.objects.count()
     print(all_points, all_lines)
     if request.method == 'GET':
-        return HttpResponse(f'New data has been added to DB.<br><br> Response :<br>{all_lines} lines  <br><br>{all_points} points')
+        return TemplateResponse(request,"base.html",{"all_lines": all_lines,"all_points":all_points })
     else:
-        return HttpResponse('rest test')
+        return HttpResponseBadRequest('Method not allowed')
 
 
 # adding points data to database

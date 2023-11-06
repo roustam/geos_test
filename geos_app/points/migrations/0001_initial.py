@@ -13,5 +13,23 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        CreateExtension("postgis")
+        CreateExtension("postgis"),
+        migrations.CreateModel(
+            name='PointsModel',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('obj_id', models.IntegerField(default=0)),
+                ('geom', django.contrib.gis.db.models.fields.PointField(srid=4326)),
+                ('score', models.IntegerField()),
+                ('city', models.CharField(max_length=100))
+            ],
+        ),
+        migrations.CreateModel(
+            name='LinesModel',
+            fields=[
+                ('line_id', models.AutoField(primary_key=True, serialize=False)),
+                ('from_point', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='from_point', to='points.pointsmodel')),
+                ('to_point', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_point', to='points.pointsmodel')),
+            ],
+        ),
     ]

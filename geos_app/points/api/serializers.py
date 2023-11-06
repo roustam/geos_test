@@ -6,7 +6,7 @@ from rest_framework_gis.serializers import GeoFeatureModelSerializer
 class LineNumberSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinesModel
-        fields = ['from_point', 'to_point']
+        fields = ['line_id','from_point_id', 'to_point_id']
 
 
 class LocationSerializer(GeoFeatureModelSerializer):
@@ -15,7 +15,7 @@ class LocationSerializer(GeoFeatureModelSerializer):
         model = PointsModel
         many = True
         geo_field = "geom"
-        fields = ('id', 'score', 'obj_id')
+        fields = ('id', 'score', 'city')
 
 class LocationSerializerList(GeoFeatureModelSerializer):
 

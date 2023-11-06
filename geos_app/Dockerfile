@@ -6,6 +6,7 @@ COPY manage.py manage.py
 COPY geos_test geos_test
 COPY points points
 COPY init.sh init.sh
+COPY static static
 
 RUN apt update \
     && apt install -y postgresql-common \

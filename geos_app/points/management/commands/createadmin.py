@@ -8,3 +8,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options) -> None:
         if not User.objects.count():
             User.objects.create_superuser('admin', 'admin@example.com', '123qwe')
+ #test

@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/leaflet_1.9.4_dist_leaflet.css"/>
+    <link rel="stylesheet" href="/static/normalize.css" />
+    <script src="/static/leaflet_1.9.4_dist_leaflet.js"></script>
+    <title>Geo Points</title>
+</head>
+<body>
+    
+    <header>
+        <h2 class="hdr">Shortest route app</h2>
+    </header>
+    <main>
+        map
+        <div id="map"></div>
+    </main>
+
+    <form>
+        <div>
+            <label for="select_from">Select origin city:</label>
+            <select class="select-box" id="select_from"></select>
+            <label for="select_to">Select origin city:</label>
+            <select class="select-box" id="select_to"></select>
+            <label for="select_search_type">Select method:</label>
+            <select class="select-box" id="select_search_type">
+                <option value="min_score">Minimal score</option>
+                <option value="min_length">Minimal lenght</option>
+            </select>
+            <div>
+                <p>Line info:</p>
+                <textarea class="text-area-result" id="text-output"></textarea>    
+            </div>
+        </div>
+        
+        <input type="button" value="test" id="geoform" onclick="drawResultsOnMap()"/>
+    </form>
+
+
+    <footer>
+        2023 :: Shortest route app
+    </footer>
+    <script>
+        const points_url = '/points/api/'
+        const lines_url = '/points/api/lines'
+        let globalData = null;
+        let globalLines = null;
+ 
+        var map = L.map('map', {
+        layers: [
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                'attribution': 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+            })
+                ],
+                center: [30, 40],
+                zoom: 3
+            });
+        let mainLayer = L.geoJSON().addTo(map);
+        let processedLayer = L.geoJSON().addTo(map);
+
+        async function getPoints(url) {
+            try {
+                let response = await fetch(url)
+                let json_data = await response.json()
+                globalData = json_data;
+                return json_data
+
+            } catch(err) {
+                console.log(err)
+            }
+        }
+
+        async function getLines(url) {
+            try {
+                let response = await fetch(url)
+                let json_data = await response.json()
+                linesData = json_data;
+                return linesData
+            } catch(err) {
+                console.log(err)
+            }
+        }
+
+        function drawLine([from_lat, from_lon],[to_lat,to_lon], lineColor) {
+            myLayer.addData({
+                "type":"LineString",
+                "coordinates":[[from_lat, from_lon],[to_lat,to_lon]],
+            }).setStyle({"color": lineColor})
+        }
+
+        async function getResults(url, from_id, to_id, method){
+            try {
+                let response = await fetch(url)
+                let json_data = await response.json()
+                return json_data;
+            } catch(err) {
+                console.log(err)
+            }
+        }
+
+        // function for text output
+
+        function outputText(data, search_method) {
+            let shortest_path_cities = []
+            let output = ''
+            for (point_id of data.shortest_path){
+                geo_point_features = data.geo_points.features.find(({ id }) => id === point_id)
+                shortest_path_cities.push(geo_point_features.properties.city)
+            }
+
+            shortest_distance = data.shortest_distance
+            
+            if (search_method === 'min_length') {
+                output = `Path goes through next points - ${shortest_path_cities}, total distance ${shortest_distance} km`
+            } else if (search_method === 'min_score') {
+                output = `Path goes through next points - ${shortest_path_cities}, total score ${data.total_score}`
+            } else {
+                output = 'error'
+            }
+
+            return output
+        }
+
+        async function drawResultsOnMap() {
+            let from_id = document.getElementById('select_from').value
+            let to_id = document.getElementById('select_to').value
+            let search_method = document.getElementById('select_search_type').value
+            let info_text = document.getElementById('text-output')
+            let url = `/points/api/${search_method}/from/${from_id}/to/${to_id}`
+            let lines_array = []
+
+            console.log("results", from_id, to_id)
+            try {
+                const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error('Network error');
+                    }
+                const data = await response.json();
+                console.log('---> data', data)
+                info_text.value = outputText(data, search_method)
+
+
+                for(point of data.shortest_path){
+                    point_coords = data.geo_points.features.find((e) => e.id == point)
+                    console.log(`point ${point} - coords ${point_coords.geometry.coordinates}`)
+                    lines_array.push(point_coords.geometry.coordinates.reverse())
+                }
+                console.log('l processedLayer', processedLayer)
+                processedLayer.clearLayers()
+                let polyline1 = L.polyline([lines_array]).addTo(processedLayer).setStyle({"color":"red"});
+            } catch (error) {
+                console.error('Error fetching JSON data:', error);
+            }
+            
+    }
+
+
+        (async function execute() {
+            let points = await getPoints(points_url);
+            let lines = await getLines(lines_url)
+            let select_popup_from = document.getElementById("select_from");
+            let select_popup_to = document.getElementById("select_to");
+            let info_text = document.getElementById('text-output')
+            mainLayer.addData(globalData.features)
+            
+            //popup elems function
+            for (point of globalData.features) {
+
+                select_popup_from.options[select_popup_from.options.length] = new Option(text=point.properties.city, value=point.id)
+                select_popup_to.options[select_popup_to.options.length] = new Option(text=point.properties.city, value=point.id)
+                console.log(`${point.id} ${point.properties.city}`)
+            }
+            
+            // console.log('glob lines', lines, points)
+            for (i of lines) {
+                let from_points = points.features.find(o => o.id === i.from_point_id)
+                let to_points = points.features.find(o => o.id === i.to_point_id)
+                mainLayer.addData({
+                    "type":"LineString",
+                    "coordinates":[from_points.geometry.coordinates, to_points.geometry.coordinates]
+                }).setStyle({"color":"gray"})
+            }
+
+
+        }
+        )();
+
+    </script>
+
+
+</body>
+</html>
