@@ -8,11 +8,12 @@ load_dotenv()
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
+WEBSITE_URL = os.getenv('WEBSITE_URL')
 DEBUG = True
 DJANGO_SUPERUSER_PASSWORD = os.getenv('DJANGO_SUPERUSER_PASSWORD')
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
-
-ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [WEBSITE_URL]
+ALLOWED_HOSTS = [WEBSITE_URL]
 
 
 # Application definition
