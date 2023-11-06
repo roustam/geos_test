@@ -7,6 +7,7 @@ COPY geos_test geos_test
 COPY points points
 COPY init.sh init.sh
 COPY static static
+COPY sample_points.json sample_points.json
 
 RUN apt update \
     && apt install -y postgresql-common \
